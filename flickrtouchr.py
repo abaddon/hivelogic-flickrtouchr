@@ -9,11 +9,12 @@
 #
 # Version:       1.2
 #
-# Original Author:	colm - AT - allcosts.net  - Colm MacCarthaigh - 2008-01-21
+# Original Author:  colm - AT - allcosts.net  - Colm MacCarthaigh - 2008-01-21
 #
-# Modified by:			Dan Benjamin - http://hivelogic.com										
+# Modified by:          Dan Benjamin - http://hivelogic.com
+#                       Stefano Longhi             
 #
-# License:       		Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
+# License:              Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
 #
 
 import xml.dom.minidom
@@ -245,6 +246,7 @@ if __name__ == '__main__':
         # Build the list of photos
         url   = "https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
         url  += "&photoset_id=" + pid
+        url  += "&extras=date_taken"
 
         # Append to our list of urls
         urls.append( (url , dir) )
@@ -254,10 +256,12 @@ if __name__ == '__main__':
 
     # Add the photos which are not in any set
     url   = "https://api.flickr.com/services/rest/?method=flickr.photos.getNotInSet"
+    url  += "&extras=date_taken"
     urls.append( (url, "No Set") )
 
     # Add the user's Favourites
     url   = "https://api.flickr.com/services/rest/?method=flickr.favorites.getList"
+    url  += "&extras=date_taken"
     urls.append( (url, "Favourites") )
 
     # Time to get the photos
@@ -297,9 +301,12 @@ if __name__ == '__main__':
 
                 # Grab the id
                 photoid = photo.getAttribute("id")
+                
+                #Grab the date_taken
+                dateTaken = photo.getAttribute("datetaken")
 
                 # The target
-                target = dir + "/" + photoid + ".jpg"
+                target = dir + "/" + dateTaken + "_" + photoid + ".jpg"
 
                 # Skip files that exist
                 if os.access(target, os.R_OK):
